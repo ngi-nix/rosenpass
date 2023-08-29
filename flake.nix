@@ -381,8 +381,8 @@
 
         formatter = pkgs.nixpkgs-fmt;
 
-        nixosTests."x86_64-linux" = {
-          rosenpass = import ./nixos-test {};
+        nixosTests = {
+          rosenpass = pkgs.nixosTest (import ./nixos-test {});
         };
       }))
     ];
