@@ -383,7 +383,7 @@
 
         nixosTests = {
           rosenpass = pkgs.nixosTest (import ./nixos-test {
-            rosenpassPkg = pkgs.lib.debug.traceVal self.packages.${system}.rosenpass;
+            rosenpassPkg = self.packages.${system}.rosenpass;
           });
         };
       }))
