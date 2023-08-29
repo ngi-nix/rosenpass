@@ -383,7 +383,7 @@
 
         nixosTests = {
           rosenpass = pkgs.nixosTest (import ./nixos-test {
-            rosenpassPkg = self.packages.${system}.rosenpass;
+            rosenpassPkg = packages.rosenpass; # FIXME: fix double system
           });
         };
       }))
