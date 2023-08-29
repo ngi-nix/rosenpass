@@ -1,4 +1,4 @@
-{...}: {
+{rosenpassPkg, ...}: {
   name = "rosenpass tests";
 
   nodes = {
@@ -7,6 +7,8 @@
       config,
       ...
     }: {
+      environment.systemPackages = [rosenpassPkg];
+
       # Use kmscon <https://www.freedesktop.org/wiki/Software/kmscon/>
       # to provide a slightly nicer console, and while we're at it,
       # also use a nice font.

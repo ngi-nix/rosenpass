@@ -382,7 +382,9 @@
         formatter = pkgs.nixpkgs-fmt;
 
         nixosTests = {
-          rosenpass = pkgs.nixosTest (import ./nixos-test {});
+          rosenpass = pkgs.nixosTest (import ./nixos-test {
+            rosenpassPkg = pkgs.lib.debug.traceVal self.packages.${system}.rosenpass;
+          });
         };
       }))
     ];
