@@ -55,6 +55,8 @@ pub struct RosenpassPeer {
 pub struct WireGuard {
     pub device: String,
     pub peer: String,
+
+    #[serde(default)]
     pub extra_params: Vec<String>,
 }
 
@@ -63,9 +65,17 @@ impl Rosenpass {
     ///
     /// no validation is conducted
     pub fn load<P: AsRef<Path>>(p: P) -> anyhow::Result<Self> {
-        let mut config: Self = toml::from_str(&fs::read_to_string(&p)?)?;
-
+        let mut config: Self = Rosenpass::load_from_string(fs::read_to_string(&p)?)?;
         config.config_file_path = p.as_ref().to_owned();
+        Ok(config)
+    }
+
+    /// Load a config file from a string
+    ///
+    /// no validation is conducted
+    pub fn load_from_string(s: String) -> anyhow::Result<Self> {
+        let mut config: Self = toml::from_str(&s)?;
+        config.config_file_path = PathBuf::from("string");
         Ok(config)
     }
 
@@ -451,5 +461,26 @@ mod test {
                 }
             ]
         )
+    }
+
+    #[test]
+    fn test_config_parse_with_wg() -> Result<(), anyhow::Error> {
+        let config = Rosenpass::load_from_string(String::from(r#"
+public_key = "./keys/server/pqpk"
+secret_key = "./keys/server/pqsk"
+listen = ["[::]:9999"]
+verbosity = "Verbose"
+
+[[peers]]
+public_key = "./peers/client/pqpk"
+device = "rserver"
+peer = "xxx"
+        "#))?;
+
+        //config.validate();
+        println!("{:#?}", config);
+        assert_eq!(config.peers[0].wg.as_ref().unwrap().peer, "xxx");
+
+        Ok(())
     }
 }
